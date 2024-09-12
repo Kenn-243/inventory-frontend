@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
 import { signInUser } from "../../reducers/user/userSlice";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import InputBar from "../../components/InputBar";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const navigate = useNavigate();

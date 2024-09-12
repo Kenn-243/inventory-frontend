@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../store/store";
-import { nullifyUserData } from "../reducers/user/userSlice";
+import { nullifyUserData, successLogOut } from "../reducers/user/userSlice";
 import { nullifyItem } from "../reducers/item/itemSlice";
 
 export default function Navbar() {
@@ -9,6 +9,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
 
   function handleLogout() {
+    dispatch(successLogOut());
     dispatch(nullifyUserData());
     dispatch(nullifyItem());
   }

@@ -79,6 +79,8 @@ export const itemSlice = createSlice({
   initialState: {
     isLoading: false,
     isError: false,
+    isSuccessful: false,
+    errorMessage: "",
     itemData: [] as ItemModel[],
   },
   reducers: {
@@ -88,30 +90,72 @@ export const itemSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchItem.pending, (state) => {
+      state.isSuccessful = false;
       state.isLoading = true;
     });
     builder.addCase(fetchItem.rejected, (state) => {
+      state.isSuccessful = false;
       state.isLoading = false;
-      state.isError = true;
     });
     builder.addCase(fetchItem.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.isError = false;
+      state.isSuccessful = true;
       state.itemData = action.payload;
     });
 
     builder.addCase(createItem.pending, (state) => {
       state.isLoading = true;
       state.isError = false;
+      state.isSuccessful = false;
+      state.errorMessage = "";
     });
-    builder.addCase(createItem.rejected, (state) => {
+    builder.addCase(createItem.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
+      state.isSuccessful = false;
+      state.errorMessage = action.error.message;
     });
     builder.addCase(createItem.fulfilled, (state, action) => {
       state.isError = false;
       state.isLoading = false;
+      state.isSuccessful = true;
+      state.errorMessage = "";
       state.itemData = [...state.itemData, action.payload];
+    });
+
+    builder.addCase(updateItem.pending, (state) => {
+      state.isError = false;
+      state.isLoading = true;
+      state.isSuccessful = false;
+      state.errorMessage = "";
+    });
+    builder.addCase(updateItem.rejected, (state, action) => {
+      state.isError = true;
+      state.isLoading = false;
+      state.isSuccessful = false;
+      state.errorMessage = action.error.message;
+    });
+    builder.addCase(updateItem.fulfilled, (state) => {
+      state.isError = false;
+      state.isLoading = false;
+      state.isSuccessful = true;
+      state.errorMessage = "";
+    });
+
+    builder.addCase(deleteItem.pending, (state) => {
+      state.isError = false;
+      state.isLoading = true;
+      state.isSuccessful = false;
+    });
+    builder.addCase(deleteItem.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccessful = false;
+    });
+    builder.addCase(deleteItem.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccessful = true;
     });
   },
 });
