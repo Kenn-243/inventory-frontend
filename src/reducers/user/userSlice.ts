@@ -16,7 +16,6 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
     });
     return userDataResult;
   } catch (err: any) {
-    console.log(err);
     throw err.response.data;
   }
 }) as any;
@@ -31,7 +30,6 @@ export const createUser = createAsyncThunk(
       );
       return result.data;
     } catch (err: any) {
-      console.log(err);
       throw err.response.data;
     }
   }
@@ -45,7 +43,6 @@ export const signInUser = createAsyncThunk(
         "http://localhost:8000/GetUser",
         userData
       );
-      console.log(result.data);
       return result.data;
     } catch (err: any) {
       throw err.response.data;
@@ -62,7 +59,12 @@ const UserSlice = createSlice({
     isError: false,
     errorMessage: "",
     isSuccessful: false,
-    userData: null as UserModel | null,
+    userData: {
+      userId: 0,
+      username: "",
+      email: "",
+      password: "",
+    } as UserModel | null,
   },
   reducers: {
     nullifyUserData: (state) => {

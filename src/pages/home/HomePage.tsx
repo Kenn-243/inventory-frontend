@@ -52,7 +52,9 @@ export default function Home() {
       try {
         let item = {
           itemName: itemName,
-          userId: userData?.userId,
+          user: {
+            userId: userData?.userId,
+          },
         };
         await dispatch(createItem(item));
       } catch (err) {
@@ -94,9 +96,9 @@ export default function Home() {
   const handleInfo = (
     itemId: number,
     itemName: string,
-    userId?: number,
-    username?: string,
-    userEmail?: string
+    userId: number | undefined,
+    username: string | undefined,
+    userEmail: string | undefined
   ) => {
     setInfo({ itemId, itemName, userId, username, userEmail });
     infoItemModal.showModal();
@@ -134,7 +136,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isLoggedIn && userData != null) {
-      dispatch(fetchItem(userData.userId));
+      dispatch(fetchItem());
     }
   }, [isDeleting, isLoggedIn, isCreating, isUpdating]);
 
@@ -145,7 +147,6 @@ export default function Home() {
   }, [isError]);
 
   useEffect(() => {
-    console.log(isLoggedOut);
     if (isSuccessful || isLoggedOut) {
       SuccessPopup();
     }
@@ -297,7 +298,7 @@ export default function Home() {
                           {value.itemName}
                         </td>
                         <td style={{ textAlign: "center" }}>
-                          {userData?.username}
+                          {value.user.username}
                         </td>
                         <td style={{ textAlign: "center" }}>
                           <button

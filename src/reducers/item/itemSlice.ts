@@ -1,31 +1,30 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { ItemModel } from "../../models/itemModel";
+import { UserModel } from "../../models/userModel";
 
-export const fetchItem = createAsyncThunk(
-  "item/fetchItem",
-  async (userId: number) => {
-    try {
-      const result = await axios.get(
-        "http://localhost:8000/GetItemByUserId/" + userId
-      );
-      if (result != null) {
-        const itemDataResult: ItemModel[] = [];
-        result.data.map((x: any) => {
-          itemDataResult.push({
-            itemId: x.itemId,
-            itemName: x.itemName,
-            userId: x.userId,
-          });
+export const fetchItem = createAsyncThunk("item/fetchItem", async () => {
+  try {
+    const result = await axios.get("http://localhost:8000/GetAllItems");
+    if (result != null) {
+      const itemDataResult: ItemModel[] = [];
+      result.data.map((x: any) => {
+        itemDataResult.push({
+          itemId: x.itemId,
+          itemName: x.itemName,
+          user: {
+            userId: x.user.userId,
+            username: x.user.username,
+            email: x.user.email,
+          } as UserModel,
         });
-        return itemDataResult;
-      }
-    } catch (err) {
-      console.log(err);
-      throw err;
+      });
+      return itemDataResult;
     }
+  } catch (err) {
+    throw err;
   }
-) as any;
+}) as any;
 
 export const createItem = createAsyncThunk(
   "item/createItem",
@@ -37,7 +36,6 @@ export const createItem = createAsyncThunk(
       );
       return result.data;
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -53,7 +51,6 @@ export const updateItem = createAsyncThunk(
       );
       return result.data;
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -68,7 +65,6 @@ export const deleteItem = createAsyncThunk(
       );
       return result.data;
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -115,12 +111,11 @@ export const itemSlice = createSlice({
       state.isSuccessful = false;
       state.errorMessage = action.error.message;
     });
-    builder.addCase(createItem.fulfilled, (state, action) => {
+    builder.addCase(createItem.fulfilled, (state) => {
       state.isError = false;
       state.isLoading = false;
       state.isSuccessful = true;
       state.errorMessage = "";
-      state.itemData = [...state.itemData, action.payload];
     });
 
     builder.addCase(updateItem.pending, (state) => {
